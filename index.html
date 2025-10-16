@@ -1,277 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      /* RESET E SCHERMO INTERNO */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #f5f5f5;
-        display: flex;
-        flex-direction: column;
-        height: 100vh; /* ALTEZZA SCHERMO INTERO */
-        width: 100vw;  /* LARGHEZZA SCHERMO INTERO */
-        overflow: hidden;
-      }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      /* PAGINA INIZIALE - SCHERMO INTERO */
-      .pagina-iniziale {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        background: white;
-        overflow: hidden;
-      }
+    body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+    }
 
-      .header {
-        background: #052A70;
-        color: white;
-        padding: 25px 20px;
-        text-align: center;
-        flex-shrink: 0;
-      }
+    #pagina-iniziale, #pagina-biglietto {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+    }
 
-      .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
+    #pagina-biglietto { display: none; }
 
-      .tabs {
-        display: flex;
-        background: #e9ecef;
-        padding: 15px 20px;
-        gap: 25px;
-        flex-shrink: 0;
-      }
+    #pagina-iniziale img, #pagina-biglietto img {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
 
-      .tab {
-        font-weight: 600;
-        color: #6c757d;
-        font-size: 16px;
-      }
+<!-- SCHERMATA INIZIALE -->
+<div id="pagina-iniziale">
+  <img 
+    src="https://lh3.googleusercontent.com/d/1lB_OeSlRlwEddVdcgVkb4RaWuZQtU8Nk" 
+    alt="Schermata iniziale"
+    onclick="gestisciClick(event)"
+  >
+</div>
 
-      .tab.active {
-        color: #052A70;
-        border-bottom: 3px solid #052A70;
-      }
+<!-- SCHERMATA BIGLIETTO -->
+<div id="pagina-biglietto">
+  <img id="immagine-biglietto" src="" alt="Biglietto attivo" onclick="tornaAllaHome()">
+</div>
 
-      .content {
-        padding: 25px;
-        flex: 1;
-        overflow-y: auto;
-      }
+<script>
+  function gestisciClick(event) {
+    const img = event.target;
+    const rect = img.getBoundingClientRect();
+    const clickX = event.clientX - rect.left; // coordinata X relativa all'immagine
+    const clickY = event.clientY - rect.top;  // coordinata Y relativa all'immagine
+    const imgWidth = rect.width;
+    const imgHeight = rect.height;
 
-      .ticket-section {
-        margin-bottom: 30px;
-      }
+    let urlBiglietto = null;
 
-      .section-title {
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #333;
-        font-size: 18px;
-      }
+    // esempio: tasto blu superiore
+    const tasto1 = {
+      xMin: imgWidth * 0.2,  // in percentuale rispetto all'immagine
+      xMax: imgWidth * 0.4,
+      yMin: imgHeight * 0.3,
+      yMax: imgHeight * 0.4
+    };
 
-      .ticket-card {
-        background: #f8f9fa;
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-left: 5px solid #052A70;
-      }
+    // esempio: tasto blu inferiore
+    const tasto2 = {
+      xMin: imgWidth * 0.2,
+      xMax: imgWidth * 0.4,
+      yMin: imgHeight * 0.6,
+      yMax: imgHeight * 0.7
+    };
 
-      .operator {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 8px;
-        font-size: 17px;
-      }
+    if (clickX >= tasto1.xMin && clickX <= tasto1.xMax &&
+        clickY >= tasto1.yMin && clickY <= tasto1.yMax) {
+      urlBiglietto = "https://lh3.googleusercontent.com/d/114jMH_ILea0n01BbJPRee6a7xKc4IaCO"; // primo biglietto
+    }
 
-      .ticket-count {
-        color: #6c757d;
-        font-size: 15px;
-      }
+    if (clickX >= tasto2.xMin && clickX <= tasto2.xMax &&
+        clickY >= tasto2.yMin && clickY <= tasto2.yMax) {
+      urlBiglietto = "https://lh3.googleusercontent.com/d/1M5y-h2f2gqTQEPAbm8qYql3MZvLj9mAM"; // secondo biglietto
+    }
 
-      .ticket-details {
-        background: white;
-        border-radius: 15px;
-        padding: 20px;
-        border: 2px solid #e9ecef;
-      }
+    if (urlBiglietto) {
+      mostraBiglietto(urlBiglietto);
+    } else {
+      console.log("Click fuori dai tasti"); // opzionale: click ignorato
+    }
+  }
 
-      .ticket-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 18px;
-      }
+  function mostraBiglietto(url) {
+    document.getElementById("immagine-biglietto").src = url;
+    document.getElementById("pagina-iniziale").style.display = "none";
+    document.getElementById("pagina-biglietto").style.display = "flex";
+  }
 
-      .ticket-status {
-        color: #6c757d;
-        font-size: 15px;
-        margin-bottom: 20px;
-      }
+  function tornaAllaHome() {
+    document.getElementById("pagina-biglietto").style.display = "none";
+    document.getElementById("pagina-iniziale").style.display = "flex";
+  }
+</script>
 
-      .ticket-features {
-        margin-bottom: 20px;
-      }
-
-      .feature {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        font-size: 16px;
-        color: #333;
-      }
-
-      .feature::before {
-        content: "•";
-        margin-right: 10px;
-        color: #052A70;
-        font-size: 20px;
-      }
-
-      .price {
-        font-weight: 600;
-        color: #333;
-        font-size: 22px;
-        text-align: right;
-        margin-bottom: 15px;
-      }
-
-      .activate-btn {
-        background: #052A70;
-        color: white;
-        border: none;
-        padding: 18px 0;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        width: 200px;
-        font-size: 20px;
-        margin-top: 10px;
-      }
-
-      .activate-btn:active {
-        background: #0056b3;
-        transform: scale(0.98);
-      }
-
-      /* OVERLAY SCHERMO INTERO */
-      #overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: white;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-
-      .image-container {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      .image-container img {
-        width: 100%;
-        height: 100%;
-        //object-fit: contain; /* Mantiene proporzioni su tutto lo schermo */
-      }
-    </style>
-  </head>
-  <body>
-    <!-- PAGINA INIZIALE - SCHERMO INTERO -->
-    <div class="pagina-iniziale" id="home">
-      <div class="header">
-        <h1>I miei ticket</h1>
-      </div>
-      
-      <div class="tabs">
-        <div class="tab active">DISPONIBILI</div>
-        <div class="tab">SCADUTI</div>
-      </div>
-
-      <div class="content">
-        <div class="ticket-section">
-          <div class="section-title">Ticket disponibili</div>
-          <div class="ticket-card">
-            <div class="operator">AMAT - Palermo</div>
-            <div class="ticket-count">3 ticket disponibili</div>
-          </div>
-        </div>
-
-        <div class="ticket-details">
-          <div class="ticket-name">Biglietto ordinario</div>
-          <div class="ticket-status">Non attivo</div>
-          
-          <div class="ticket-features">
-            <div class="feature">Valido 90 minuti</div>
-            <div class="feature">Attiva</div>
-          </div>
-          
-       
-                
-             
-         <div class="ticket-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-         <button class="activate-btn" onclick="attiva()" style="flex-shrink: 0;">ATTIVA</button>
-         <div class="price" style="font-weight: 600; font-size: 20px;">1,40 €</div>
-        </div>
-             
-             
-        </div>
-      </div>
-    </div>
-
-    <!-- OVERLAY SCHERMO INTERO -->
-    <div id="overlay">
-      <div class="image-container" onclick="chiudi()">
-     <!--   <img src="https://lh3.googleusercontent.com/d/114jMH_ILea0n01BbJPRee6a7xKc4IaCO" alt="Biglietto" alt="Biglietto attivo"> -->
-        <img src="https://lh3.googleusercontent.com/d/1lB_OeSlRlwEddVdcgVkb4RaWuZQtU8Nk" alt="Biglietto" alt="Biglietto attivo">
-      </div>
-    </div>
-
-    <script>
-      function attiva() {
-        document.getElementById("home").style.display = "none";
-        document.getElementById("overlay").style.display = "flex";
-      }
-      
-      function chiudi() {
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("home").style.display = "flex";
-      }
-
-      // Chiudi overlay premendo ESC
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          chiudi();
-        }
-      });
-
-      // Previene il zoom su mobile
-      document.addEventListener('touchmove', function(e) {
-        if (e.scale !== 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-    </script>
-  </body>
+</body>
 </html>
-
