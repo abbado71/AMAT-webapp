@@ -2,10 +2,29 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec" />
-  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AMAT Web App</title>
 </head>
 <body>
-  <p>Se non vieni reindirizzato automaticamente, clicca <a href="https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec">qui</a>.</p>
+  <h1>AMAT Web App Frontend</h1>
+  <button id="btn">Chiama backend GAS</button>
+  <p id="output"></p>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec?json=true";
+  
+
+    document.getElementById("btn").addEventListener("click", async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Errore HTTP " + response.status);
+        const data = await response.json();
+        document.getElementById("output").textContent = data.message;
+      } catch (error) {
+        console.error(error);
+        document.getElementById("output").textContent = "Errore nella chiamata API";
+      }
+    });
+  </script>
 </body>
 </html>
