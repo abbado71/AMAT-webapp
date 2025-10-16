@@ -2,29 +2,10 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mia App</title>
+  <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec" />
+  <title>Redirecting...</title>
 </head>
 <body>
-  <h1>App collegata a Google Apps Script ciao </h1>
-  <button id="btn">Prova backend</button>
-  <p id="output"></p>
-
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec?json=true";
-
-    document.getElementById("btn").addEventListener("click", async () => {
-      try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        document.getElementById("output").textContent = data.message;
-      } catch (err) {
-        console.error(err);
-        document.getElementById("output").textContent = "Errore nella chiamata API zoccola";
-      }
-    });
-  </script>
+  <p>Se non vieni reindirizzato automaticamente, clicca <a href="https://script.google.com/macros/s/AKfycbxkbcgMQAnfmN24ykEPdZrVlGh3Vhbg2Te0nYKzAWY2qNpFWyfuZfYaPmU14BsnGD0s6A/exec">qui</a>.</p>
 </body>
 </html>
-
-
