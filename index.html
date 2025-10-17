@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -32,83 +32,117 @@
     #pagina-iniziale img, #pagina-biglietto img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
       cursor: pointer;
     }
+
+    /* (Facoltativo per debug: mostra zona cliccabile) */
+    /*
+    #pagina-biglietto::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 30%;
+      width: 40%; 
+      height: 10%; 
+      background: rgba(255, 0, 0, 0.2);
+    }
+    */
   </style>
 </head>
 <body>
 
-<!-- SCHERMATA INIZIALE -->
-<div id="pagina-iniziale">
-  <img 
-    src="https://lh3.googleusercontent.com/d/1lB_OeSlRlwEddVdcgVkb4RaWuZQtU8Nk" 
-    alt="Schermata iniziale"
-    onclick="gestisciClick(event)"
-  >
-</div>
+  <!-- SCHERMATA INIZIALE -->
+  <div id="pagina-iniziale">
+    <img 
+      src="images/Biglietti.jpg" 
+      alt="Schermata iniziale"
+      onclick="gestisciClick(event)"
+    >
+  </div>
 
-<!-- SCHERMATA BIGLIETTO -->
-<div id="pagina-biglietto">
-  <img id="immagine-biglietto" src="" alt="Biglietto attivo" onclick="tornaAllaHome()">
-</div>
+  <!-- SCHERMATA BIGLIETTO -->
+  <div id="pagina-biglietto">
+    <img id="immagine-biglietto" src="" alt="Biglietto attivo">
+  </div>
 
-<script>
-  function gestisciClick(event) {
-    const img = event.target;
-    const rect = img.getBoundingClientRect();
-    const clickX = event.clientX - rect.left; // coordinata X relativa all'immagine
-    const clickY = event.clientY - rect.top;  // coordinata Y relativa all'immagine
-    const imgWidth = rect.width;
-    const imgHeight = rect.height;
+  <script>
+    function gestisciClick(event) {
+      const img = event.target;
+      const rect = img.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      const imgWidth = rect.width;
+      const imgHeight = rect.height;
 
-    let urlBiglietto = null;
+      let urlBiglietto = null;
 
-    // esempio: tasto blu superiore
-    const tasto1 = {
-      xMin: imgWidth * 0.1,  // in percentuale rispetto all'immagine
-      xMax: imgWidth * 0.5,
-      yMin: imgHeight * 0.5,
-      yMax: imgHeight * 0.6
-    };
+      // Esempio: primo tasto
+      const tasto1 = {
+        xMin: imgWidth * 0.1,
+        xMax: imgWidth * 0.5,
+        yMin: imgHeight * 0.5,
+        yMax: imgHeight * 0.6
+      };
 
-    // esempio: tasto blu inferiore
-    const tasto2 = {
-      xMin: imgWidth * 0.1,
-      xMax: imgWidth * 0.5,
-      yMin: imgHeight * 0.7,
-      yMax: imgHeight * 0.8
-    };
+      // Esempio: secondo tasto
+      const tasto2 = {
+        xMin: imgWidth * 0.1,
+        xMax: imgWidth * 0.5,
+        yMin: imgHeight * 0.7,
+        yMax: imgHeight * 0.8
+      };
 
-    if (clickX >= tasto1.xMin && clickX <= tasto1.xMax &&
-        clickY >= tasto1.yMin && clickY <= tasto1.yMax) {
-      urlBiglietto = "https://lh3.googleusercontent.com/d/114jMH_ILea0n01BbJPRee6a7xKc4IaCO"; // primo biglietto
+      if (clickX >= tasto1.xMin && clickX <= tasto1.xMax &&
+          clickY >= tasto1.yMin && clickY <= tasto1.yMax) {
+        urlBiglietto = "images/BigliettoAttivo90MIN.jpg";
+      }
+
+      if (clickX >= tasto2.xMin && clickX <= tasto2.xMax &&
+          clickY >= tasto2.yMin && clickY <= tasto2.yMax) {
+        urlBiglietto = "images/BigliettoAttivo80MIN.jpg";
+      }
+
+      if (urlBiglietto) {
+        mostraBiglietto(urlBiglietto);
+      } else {
+        console.log("Click fuori dai tasti");
+      }
     }
 
-    if (clickX >= tasto2.xMin && clickX <= tasto2.xMax &&
-        clickY >= tasto2.yMin && clickY <= tasto2.yMax) {
-      urlBiglietto = "https://lh3.googleusercontent.com/d/1M5y-h2f2gqTQEPAbm8qYql3MZvLj9mAM"; // secondo biglietto
+    function mostraBiglietto(url) {
+      const imgBiglietto = document.getElementById("immagine-biglietto");
+      imgBiglietto.src = url;
+      document.getElementById("pagina-iniziale").style.display = "none";
+      document.getElementById("pagina-biglietto").style.display = "flex";
     }
 
-    if (urlBiglietto) {
-      mostraBiglietto(urlBiglietto);
-    } else {
-      console.log("Click fuori dai tasti"); // opzionale: click ignorato
+    function tornaAllaHome() {
+      document.getElementById("pagina-biglietto").style.display = "none";
+      document.getElementById("pagina-iniziale").style.display = "flex";
     }
-  }
 
-  function mostraBiglietto(url) {
-    document.getElementById("immagine-biglietto").src = url;
-    document.getElementById("pagina-iniziale").style.display = "none";
-    document.getElementById("pagina-biglietto").style.display = "flex";
-  }
+    // ?? Gestione click solo nella parte bassa e centrale dell'immagine del biglietto
+    document.getElementById("immagine-biglietto").addEventListener("click", function(event) {
+      const img = event.target;
+      const rect = img.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      const imgWidth = rect.width;
+      const imgHeight = rect.height;
 
-  function tornaAllaHome() {
-    document.getElementById("pagina-biglietto").style.display = "none";
-    document.getElementById("pagina-iniziale").style.display = "flex";
-  }
-</script>
+      // Limiti verticali e orizzontali della zona cliccabile
+      const yMin = imgHeight * 0.9;   // ultimi 10% dell'immagine (più in basso)
+      const xMin = imgWidth * 0.47;    // dal 30% al 70% (zona centrale)
+      const xMax = imgWidth * 0.53;
+
+      if (clickY >= yMin && clickX >= xMin && clickX <= xMax) {
+        tornaAllaHome();
+      } else {
+        console.log("Click ignorato (fuori dalla zona cliccabile)");
+      }
+    });
+  </script>
 
 </body>
 </html>
-
-
